@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private String lastName;
     @ManyToMany
     @JoinTable(
-            name = "users_roles",
+            name = "users_role_types",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_type_id")
     )

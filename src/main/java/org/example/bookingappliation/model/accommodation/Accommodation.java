@@ -33,6 +33,9 @@ public class Accommodation {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false)
     private Address address;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "size_type_id", nullable = false)
+    private SizeType size;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "accommodations_amenity_types",
