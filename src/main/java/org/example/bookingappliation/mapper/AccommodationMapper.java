@@ -9,19 +9,13 @@ import org.example.bookingappliation.model.accommodation.Accommodation;
 import org.example.bookingappliation.model.accommodation.AccommodationType;
 import org.example.bookingappliation.model.accommodation.AmenityType;
 import org.example.bookingappliation.model.accommodation.SizeType;
-import org.example.bookingappliation.service.AccommodationTypeService;
-import org.example.bookingappliation.service.AmenityTypeService;
-import org.example.bookingappliation.service.SizeTypeService;
-import org.mapstruct.*;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-@Mapper(componentModel = "spring", config = MapperConfig.class, uses = {
-        AddressMapper.class,
-        AccommodationTypeService.class,
-        SizeTypeService.class,
-        AmenityTypeService.class
-})
+@Mapper(config = MapperConfig.class, uses = AddressMapper.class)
 public interface AccommodationMapper {
-
     @Mapping(target = "typeId", source = "type.id")
     @Mapping(target = "sizeId", source = "size.id")
     @Mapping(target = "amenityTypeIds", ignore = true)
@@ -37,39 +31,30 @@ public interface AccommodationMapper {
         accommodationDto.setAmenityTypeIds(setOfAmenityTypeIds);
     }
 
-    @Mapping(target = "type", ignore = true)
-    @Mapping(target = "size", ignore = true)
-    @Mapping(target = "amenities", ignore = true)
     Accommodation toModelWithoutAddress(AccommodationRequestDto requestDto);
 
     @AfterMapping
     default void setAccommodationType(
             @MappingTarget Accommodation accommodation,
-            AccommodationRequestDto requestDto,
-            @Context AccommodationTypeService accommodationTypeService
-    ) {
-        AccommodationType accommodationType
-                = accommodationTypeService.getById(requestDto.getTypeId());
+            AccommodationRequestDto requestDto) {
+        AccommodationType accommodationType = new AccommodationType(requestDto.getTypeId());
         accommodation.setType(accommodationType);
     }
 
     @AfterMapping
     default void setSizeType(
             @MappingTarget Accommodation accommodation,
-            AccommodationRequestDto requestDto,
-            @Context SizeTypeService sizeTypeService
-    ) {
-        SizeType sizeType = sizeTypeService.getById(requestDto.getSizeId());
+            AccommodationRequestDto requestDto) {
+        SizeType sizeType =  new SizeType(requestDto.getSizeId());
         accommodation.setSize(sizeType);
     }
 
     @AfterMapping
     default void setAmenityTypes(
             @MappingTarget Accommodation accommodation,
-            AccommodationRequestDto requestDto,
-            @Context AmenityTypeService amenityTypeService) {
+            AccommodationRequestDto requestDto) {
         Set<AmenityType> setOfAmenityType = requestDto.getAmenityTypeIds().stream()
-                .map(amenityTypeService::getById)
+                .map(AmenityType::new)
                 .collect(Collectors.toSet());
         accommodation.setAmenities(setOfAmenityType);
     }
