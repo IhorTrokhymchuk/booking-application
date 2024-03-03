@@ -9,8 +9,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.example.bookingappliation.exception.EntityNotFoundException;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "size_types")
 public class SizeType {
@@ -23,6 +26,13 @@ public class SizeType {
             columnDefinition = "varchar")
     @Enumerated(EnumType.STRING)
     private SizeTypeName name;
+
+    public SizeType(Long id) {
+        if (id > SizeTypeName.values().length) {
+            throw new EntityNotFoundException("Invalid size type id: " + id);
+        }
+        this.id = id;
+    }
 
     //THIS EXAMPLE TO USE
     public enum SizeTypeName {

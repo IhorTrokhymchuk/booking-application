@@ -1,5 +1,6 @@
 package org.example.bookingappliation.model.accommodation;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -30,8 +31,8 @@ public class Accommodation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type_id", nullable = false)
     private AccommodationType type;
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id", unique = true, nullable = false)
     private Address address;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "size_type_id", nullable = false)
