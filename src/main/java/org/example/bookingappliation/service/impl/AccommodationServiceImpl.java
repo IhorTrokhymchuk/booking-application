@@ -70,12 +70,14 @@ public class AccommodationServiceImpl implements AccommodationService {
         accommodationRepository.deleteById(id);
     }
 
-    private void updateAccommodationWithoutAddress(Accommodation accommodation, AccommodationRequestDto requestDto) {
+    private void updateAccommodationWithoutAddress(Accommodation accommodation,
+                                                   AccommodationRequestDto requestDto) {
         Accommodation updateAccommodation = accommodationMapper.toModelWithoutAddress(requestDto);
         BeanUtils.copyProperties(updateAccommodation, accommodation, "id", "address", "isDeleted");
     }
 
-    private void updateAccommodationAddress(Accommodation accommodation, AccommodationRequestDto requestDto) {
+    private void updateAccommodationAddress(Accommodation accommodation,
+                                            AccommodationRequestDto requestDto) {
         Address address = accommodation.getAddress();
         Address updateAddress = addressMapper.toModel(requestDto.getAddressDto());
         BeanUtils.copyProperties(updateAddress, address, "id", "isDeleted");

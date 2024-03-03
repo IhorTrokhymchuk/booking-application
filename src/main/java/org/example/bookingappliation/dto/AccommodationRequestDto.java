@@ -1,9 +1,9 @@
 package org.example.bookingappliation.dto;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.Set;
-import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data

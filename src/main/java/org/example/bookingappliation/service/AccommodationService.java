@@ -1,11 +1,9 @@
 package org.example.bookingappliation.service;
 
+import java.util.List;
 import org.example.bookingappliation.dto.AccommodationDto;
 import org.example.bookingappliation.dto.AccommodationRequestDto;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface AccommodationService {
     AccommodationDto save(AccommodationRequestDto requestDto);

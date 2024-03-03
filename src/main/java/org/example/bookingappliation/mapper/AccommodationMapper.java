@@ -45,7 +45,7 @@ public interface AccommodationMapper {
     default void setSizeType(
             @MappingTarget Accommodation accommodation,
             AccommodationRequestDto requestDto) {
-        SizeType sizeType =  new SizeType(requestDto.getSizeId());
+        SizeType sizeType = new SizeType(requestDto.getSizeId());
         accommodation.setSize(sizeType);
     }
 

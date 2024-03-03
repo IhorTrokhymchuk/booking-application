@@ -2,7 +2,6 @@ package org.example.bookingappliation.model.accommodation;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -28,9 +27,8 @@ public class AccommodationType {
     @Enumerated(EnumType.STRING)
     private AccommodationTypeName name;
 
-
     public AccommodationType(Long id) {
-        if(id > AccommodationTypeName.values().length) {
+        if (id > AccommodationTypeName.values().length) {
             throw new EntityNotFoundException("Invalid accommodation type id: " + id);
         }
         this.id = id;
