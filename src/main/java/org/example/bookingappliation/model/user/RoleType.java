@@ -9,11 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Data
 @Table(name = "role_types")
-public class RoleType {
+public class RoleType implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +24,11 @@ public class RoleType {
             columnDefinition = "varchar")
     @Enumerated(EnumType.STRING)
     private RoleName name;
+
+    @Override
+    public String getAuthority() {
+        return name.name();
+    }
 
     public enum RoleName {
         CUSTOMER,
