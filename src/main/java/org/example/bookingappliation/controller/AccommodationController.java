@@ -10,6 +10,7 @@ import org.example.bookingappliation.dto.AccommodationRequestDto;
 import org.example.bookingappliation.service.AccommodationService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,6 +43,7 @@ public class AccommodationController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Update accommodation by id",
             description = "Update existing accommodation field by id")
     public AccommodationDto update(@PathVariable Long id,
@@ -50,6 +52,7 @@ public class AccommodationController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Delete accommodation by id",
             description = "Delete existing accommodation by id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -58,6 +61,7 @@ public class AccommodationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     @Operation(summary = "Create accommodation",
             description = "Create a new accommodation")
     @ResponseStatus(HttpStatus.CREATED)
