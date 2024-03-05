@@ -6,14 +6,9 @@ import org.example.bookingappliation.validation.EmailValues;
 import org.example.bookingappliation.validation.PasswordValues;
 
 @Data
-public class UserRequestDto {
+public class UserUpdateInfoRequestDto {
     @EmailValues
-    @NotNull
     private String email;
-    @PasswordValues
-    private String password;
-    @PasswordValues
-    private String repeatPassword;
     @NotNull
     private String firstName;
     @NotNull

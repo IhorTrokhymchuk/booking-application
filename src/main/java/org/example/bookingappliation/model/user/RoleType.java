@@ -11,6 +11,9 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "role_types")
@@ -31,7 +34,14 @@ public class RoleType implements GrantedAuthority {
     }
 
     public enum RoleName {
+        // Roles should be listed in ascending order of priority
         CUSTOMER,
-        ADMIN
+        ADMIN;
+
+        public static List<RoleName> getRolesInOrder() {
+            return Arrays.asList(values());
+        }
     }
+
+
 }
