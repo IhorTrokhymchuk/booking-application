@@ -4,11 +4,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.bookingappliation.dto.user.*;
+import org.example.bookingappliation.dto.user.UserResponseDto;
+import org.example.bookingappliation.dto.user.UserUpdateInfoRequestDto;
+import org.example.bookingappliation.dto.user.UserUpdatePasswordDto;
+import org.example.bookingappliation.dto.user.UserUpdateRolesRequestDto;
 import org.example.bookingappliation.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "User management", description = "Endpoints manage user info")
 @RestController
@@ -25,7 +34,7 @@ public class UserController {
         return userService.getInfo(authentication.getName());
     }
 
-    @PutMapping("/me")
+    @PatchMapping("/me")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Update info about user",
             description = "Update email, first and last names user")
@@ -37,8 +46,8 @@ public class UserController {
 
     @PutMapping("/me/password")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Operation(summary = "Update info about user",
-            description = "Update email, first and last names user")
+    @Operation(summary = "Update password",
+            description = "Update user password")
     public void updatePassword(
             Authentication authentication,
             @RequestBody @Valid UserUpdatePasswordDto requestDto) {

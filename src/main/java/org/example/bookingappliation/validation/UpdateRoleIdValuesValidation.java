@@ -4,9 +4,6 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.example.bookingappliation.model.user.RoleType;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class UpdateRoleIdValuesValidation implements ConstraintValidator<UpdateRoleIdValues, Long> {
     private static final int ROLE_TYPE_LENGTH = RoleType.RoleName.getRolesInOrder().size();
 

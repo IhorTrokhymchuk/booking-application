@@ -5,14 +5,17 @@ import java.util.stream.Collectors;
 import org.example.bookingappliation.config.MapperConfig;
 import org.example.bookingappliation.dto.user.UserRequestDto;
 import org.example.bookingappliation.dto.user.UserResponseDto;
+import org.example.bookingappliation.dto.user.UserUpdateInfoRequestDto;
 import org.example.bookingappliation.model.user.RoleType;
 import org.example.bookingappliation.model.user.User;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(config = MapperConfig.class)
+@Mapper(config = MapperConfig.class,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
     @Mapping(target = "roleNames", ignore = true)
     UserResponseDto toResponseDto(User user);
@@ -29,4 +32,6 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "roles", ignore = true)
     User toModelWithoutPasswordAndRoles(UserRequestDto requestDto);
+
+    void setUpdateInfoToUser(@MappingTarget User user, UserUpdateInfoRequestDto requestDto);
 }

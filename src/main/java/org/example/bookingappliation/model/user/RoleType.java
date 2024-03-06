@@ -8,11 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-
 import java.util.Arrays;
 import java.util.List;
+import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Data
@@ -42,6 +41,4 @@ public class RoleType implements GrantedAuthority {
             return Arrays.asList(values());
         }
     }
-
-
 }

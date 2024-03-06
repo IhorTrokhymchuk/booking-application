@@ -4,9 +4,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import lombok.RequiredArgsConstructor;
-import org.example.bookingappliation.dto.user.*;
+import org.example.bookingappliation.dto.user.UserRequestDto;
+import org.example.bookingappliation.dto.user.UserResponseDto;
+import org.example.bookingappliation.dto.user.UserUpdateInfoRequestDto;
+import org.example.bookingappliation.dto.user.UserUpdatePasswordDto;
+import org.example.bookingappliation.dto.user.UserUpdateRolesRequestDto;
 import org.example.bookingappliation.exception.EntityAlreadyExistsException;
 import org.example.bookingappliation.exception.EntityNotFoundException;
 import org.example.bookingappliation.exception.PasswordNotValidException;
@@ -22,8 +25,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final static List<RoleType.RoleName> ROLE_NAME_LIST = RoleType.RoleName.getRolesInOrder();
-    private final static Long CUSTOMER_ROLE_ID = (long) ROLE_NAME_LIST.indexOf(RoleType.RoleName.CUSTOMER) + 1;
+    private static final List<RoleType.RoleName> ROLE_NAME_LIST =
+            RoleType.RoleName.getRolesInOrder();
+    private static final Long CUSTOMER_ROLE_ID =
+            (long) ROLE_NAME_LIST.indexOf(RoleType.RoleName.CUSTOMER) + 1;
     private final RoleTypeRepository roleTypeRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -34,10 +39,8 @@ public class UserServiceImpl implements UserService {
         return userMapper.toResponseDto(getUser(email));
     }
 
-    //TODO UPDATE USER INFO
     @Override
     public UserResponseDto updateInfo(String email, UserUpdateInfoRequestDto requestDto) {
-        isUserAlreadyExist(requestDto.getEmail());
         User user = getUser(email);
         setUserInfo(user, requestDto);
         return userMapper.toResponseDto(userRepository.save(user));
@@ -70,9 +73,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void setUserInfo(User user, UserUpdateInfoRequestDto requestDto) {
-        requestDto.setEmail(requestDto.getEmail());
-        user.setFirstName(requestDto.getFirstName());
-        user.setLastName(requestDto.getLastName());
+        isUserAlreadyExist(requestDto.getEmail());
+        userMapper.setUpdateInfoToUser(user, requestDto);
     }
 
     private void isUserAlreadyExist(String email) {
@@ -110,7 +112,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void setRoleType(User user, Long roleId) {
-        List<RoleType.RoleName> roleNamesSubList = ROLE_NAME_LIST.subList(0, Math.toIntExact(roleId));
+        List<RoleType.RoleName> roleNamesSubList =
+                ROLE_NAME_LIST.subList(0, Math.toIntExact(roleId));
         List<RoleType> roleTypes = roleTypeRepository.findRoleTypesByNameIn(roleNamesSubList);
         Set<RoleType> newRoleTypes = new HashSet<>(roleTypes);
         user.setRoles(newRoleTypes);
