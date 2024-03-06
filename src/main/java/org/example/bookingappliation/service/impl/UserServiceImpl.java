@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private static final List<RoleType.RoleName> ROLE_NAME_LIST =
-            RoleType.RoleName.getRolesInOrder();
-    private static final Long CUSTOMER_ROLE_ID =
-            (long) ROLE_NAME_LIST.indexOf(RoleType.RoleName.CUSTOMER) + 1;
+    private static final RoleType.RoleName CUSTOMER_ROLE_TYPE = RoleType.RoleName.CUSTOMER;
     private final RoleTypeRepository roleTypeRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -58,7 +55,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto updateRoles(Long id, UserUpdateRolesRequestDto requestDto) {
         User user = getUser(id);
-        setRoleType(user, requestDto.getRoleId());
+        setRoleType(user, requestDto.getRoleName());
         return userMapper.toResponseDto(userRepository.save(user));
     }
 
@@ -68,7 +65,7 @@ public class UserServiceImpl implements UserService {
         User newUser = userMapper.toModelWithoutPasswordAndRoles(requestDto);
         isPasswordsValid(requestDto.getPassword(), requestDto.getRepeatPassword());
         setPassword(newUser, requestDto.getPassword());
-        setRoleType(newUser, CUSTOMER_ROLE_ID);
+        setRoleType(newUser, CUSTOMER_ROLE_TYPE);
         return userMapper.toResponseDto(userRepository.save(newUser));
     }
 
@@ -111,9 +108,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void setRoleType(User user, Long roleId) {
-        List<RoleType.RoleName> roleNamesSubList =
-                ROLE_NAME_LIST.subList(0, Math.toIntExact(roleId));
+    private void setRoleType(User user, RoleType.RoleName highestRole) {
+        List<RoleType.RoleName> roleNamesSubList = RoleType.RoleName.getRolesUpTo(highestRole);;
         List<RoleType> roleTypes = roleTypeRepository.findRoleTypesByNameIn(roleNamesSubList);
         Set<RoleType> newRoleTypes = new HashSet<>(roleTypes);
         user.setRoles(newRoleTypes);

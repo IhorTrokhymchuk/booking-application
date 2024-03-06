@@ -8,7 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,8 +37,15 @@ public class RoleType implements GrantedAuthority {
         CUSTOMER,
         ADMIN;
 
-        public static List<RoleName> getRolesInOrder() {
-            return Arrays.asList(values());
+        public static List<RoleName> getRolesUpTo(RoleName highestRole) {
+            List<RoleName> rolesUpTo = new ArrayList<>();
+            for (RoleName role : RoleName.values()) {
+                rolesUpTo.add(role);
+                if (role.equals(highestRole)) {
+                    break;
+                }
+            }
+            return rolesUpTo;
         }
     }
 }
