@@ -18,6 +18,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final int NOT_FOUND_STATUS_CODE = 404;
+    private static final int UNAUTHORIZED_STATUS_CODE = 401;
+    private static final int CONFLICT_STATUS_CODE = 409;
     private static final int BAD_REQUEST_STATUS_CODE = 400;
 
     @Override
@@ -51,6 +53,18 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<Object> handleCustomException(EntityNotFoundException ex) {
         return getObjectResponseEntity(ex.getMessage(),
                 HttpStatusCode.valueOf(NOT_FOUND_STATUS_CODE));
+    }
+
+    @ExceptionHandler(EntityAlreadyExistsException.class)
+    public ResponseEntity<Object> handleCustomException(EntityAlreadyExistsException ex) {
+        return getObjectResponseEntity(ex.getMessage(),
+                HttpStatusCode.valueOf(CONFLICT_STATUS_CODE));
+    }
+
+    @ExceptionHandler(PasswordNotValidException.class)
+    public ResponseEntity<Object> handleCustomException(PasswordNotValidException ex) {
+        return getObjectResponseEntity(ex.getMessage(),
+                HttpStatusCode.valueOf(UNAUTHORIZED_STATUS_CODE));
     }
 
     private ResponseEntity<Object> getObjectResponseEntity(String message,
