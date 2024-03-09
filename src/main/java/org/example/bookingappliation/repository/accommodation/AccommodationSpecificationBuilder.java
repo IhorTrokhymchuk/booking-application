@@ -1,6 +1,6 @@
 package org.example.bookingappliation.repository.accommodation;
 
-
+import java.math.BigDecimal;
 import lombok.RequiredArgsConstructor;
 import org.example.bookingappliation.dto.accommodations.request.AccommodationSearchDto;
 import org.example.bookingappliation.model.accommodation.Accommodation;
@@ -9,13 +9,13 @@ import org.example.bookingappliation.repository.SpecificationProviderManager;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-
 @RequiredArgsConstructor
 @Component
 public class AccommodationSpecificationBuilder implements SpecificationBuilder<Accommodation> {
-    private final SpecificationProviderManager<Accommodation, Long[]> specificationProviderManagerLongArr;
-    private final SpecificationProviderManager<Accommodation, BigDecimal> specificationProviderManagerBigDec;
+    private final SpecificationProviderManager<Accommodation, Long[]>
+            specificationProviderManagerLongArr;
+    private final SpecificationProviderManager<Accommodation, BigDecimal>
+            specificationProviderManagerBigDec;
 
     @Override
     public Specification<Accommodation> build(AccommodationSearchDto requestDto) {

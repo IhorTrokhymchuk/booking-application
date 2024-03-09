@@ -1,16 +1,16 @@
 package org.example.bookingappliation.repository.accommodation;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.bookingappliation.model.accommodation.Accommodation;
 import org.example.bookingappliation.repository.SpecificationProvider;
 import org.example.bookingappliation.repository.SpecificationProviderManager;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Component
-public class AccommodationSpecificationProviderManagerLongArr implements SpecificationProviderManager<Accommodation, Long[]> {
+public class AccommodationSpecificationProviderManagerLongArr
+        implements SpecificationProviderManager<Accommodation, Long[]> {
     private final List<SpecificationProvider<Accommodation, Long[]>> specificationProvidersLongArr;
 
     @Override

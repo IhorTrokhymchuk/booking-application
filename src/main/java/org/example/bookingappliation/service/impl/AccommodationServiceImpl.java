@@ -4,9 +4,9 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.example.bookingappliation.dto.accommodations.request.AccommodationRequestDto;
 import org.example.bookingappliation.dto.accommodations.request.AccommodationSearchDto;
 import org.example.bookingappliation.dto.accommodations.response.AccommodationDto;
-import org.example.bookingappliation.dto.accommodations.request.AccommodationRequestDto;
 import org.example.bookingappliation.dto.addresses.request.AddressRequestDto;
 import org.example.bookingappliation.exception.EntityNotFoundException;
 import org.example.bookingappliation.mapper.AccommodationMapper;
@@ -53,7 +53,8 @@ public class AccommodationServiceImpl implements AccommodationService {
         Specification<Accommodation> accommodationSpecification
                 = accommodationSpecificationBuilder.build(requestDto);
 
-        Page<Accommodation> accommodations = accommodationRepository.findAll(accommodationSpecification, pageable);
+        Page<Accommodation> accommodations =
+                accommodationRepository.findAll(accommodationSpecification, pageable);
 
         if (accommodations.isEmpty()) {
             throw new EntityNotFoundException("Cant find accommodations with parameters: "

@@ -1,14 +1,11 @@
 package org.example.bookingappliation.repository.accommodation.specefications;
 
-
+import java.util.Arrays;
 import org.example.bookingappliation.model.accommodation.Accommodation;
-import org.example.bookingappliation.model.accommodation.AccommodationType;
 import org.example.bookingappliation.model.accommodation.SizeType;
 import org.example.bookingappliation.repository.SpecificationProvider;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 @Component
 public class SizeTypeSpecificationProvider implements SpecificationProvider<Accommodation, Long[]> {
