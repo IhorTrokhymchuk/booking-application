@@ -1,4 +1,4 @@
-package org.example.bookingappliation.dto.user;
+package org.example.bookingappliation.dto.users.response;
 
 import java.util.Set;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package org.example.bookingappliation.dto;
+package org.example.bookingappliation.dto.addresses.response;
 
 import lombok.Data;
 

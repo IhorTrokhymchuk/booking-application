@@ -1,4 +1,4 @@
-package org.example.bookingappliation.repository;
+package org.example.bookingappliation.repository.roletype;
 
 import java.util.List;
 import org.example.bookingappliation.model.user.RoleType;

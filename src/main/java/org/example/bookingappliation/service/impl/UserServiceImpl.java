@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.example.bookingappliation.dto.user.UserRequestDto;
-import org.example.bookingappliation.dto.user.UserResponseDto;
-import org.example.bookingappliation.dto.user.UserUpdateInfoRequestDto;
-import org.example.bookingappliation.dto.user.UserUpdatePasswordDto;
-import org.example.bookingappliation.dto.user.UserUpdateRolesRequestDto;
+import org.example.bookingappliation.dto.users.request.UserRequestDto;
+import org.example.bookingappliation.dto.users.response.UserResponseDto;
+import org.example.bookingappliation.dto.users.request.UserUpdateInfoRequestDto;
+import org.example.bookingappliation.dto.users.request.UserUpdatePasswordRequestDto;
+import org.example.bookingappliation.dto.users.request.UserUpdateRolesRequestDto;
 import org.example.bookingappliation.exception.EntityAlreadyExistsException;
 import org.example.bookingappliation.exception.EntityNotFoundException;
 import org.example.bookingappliation.exception.PasswordNotValidException;
 import org.example.bookingappliation.mapper.UserMapper;
 import org.example.bookingappliation.model.user.RoleType;
 import org.example.bookingappliation.model.user.User;
-import org.example.bookingappliation.repository.RoleTypeRepository;
-import org.example.bookingappliation.repository.UserRepository;
+import org.example.bookingappliation.repository.roletype.RoleTypeRepository;
+import org.example.bookingappliation.repository.user.UserRepository;
 import org.example.bookingappliation.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(String email, UserUpdatePasswordDto requestDto) {
+    public void updatePassword(String email, UserUpdatePasswordRequestDto requestDto) {
         User user = getUser(email);
         passwordEncoder.matches(requestDto.getOldPassword(), user.getPassword());
         isPasswordsValid(requestDto.getNewPassword(), requestDto.getRepeatNewPassword());

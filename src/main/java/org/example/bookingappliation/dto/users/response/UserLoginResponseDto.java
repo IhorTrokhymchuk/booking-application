@@ -1,4 +1,4 @@
-package org.example.bookingappliation.dto.user;
+package org.example.bookingappliation.dto.users.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

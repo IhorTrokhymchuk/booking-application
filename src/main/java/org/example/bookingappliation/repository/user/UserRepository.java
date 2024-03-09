@@ -1,4 +1,4 @@
-package org.example.bookingappliation.repository;
+package org.example.bookingappliation.repository.user;
 
 import java.util.Optional;
 import org.example.bookingappliation.model.user.User;

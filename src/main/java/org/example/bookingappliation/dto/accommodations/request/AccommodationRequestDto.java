@@ -1,10 +1,11 @@
-package org.example.bookingappliation.dto;
+package org.example.bookingappliation.dto.accommodations.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.util.Set;
 import lombok.Data;
+import org.example.bookingappliation.dto.addresses.request.AddressRequestDto;
 
 @Data
 public class AccommodationRequestDto {

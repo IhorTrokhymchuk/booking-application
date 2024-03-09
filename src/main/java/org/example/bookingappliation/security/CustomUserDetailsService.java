@@ -1,7 +1,7 @@
 package org.example.bookingappliation.security;
 
 import lombok.RequiredArgsConstructor;
-import org.example.bookingappliation.repository.UserRepository;
+import org.example.bookingappliation.repository.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

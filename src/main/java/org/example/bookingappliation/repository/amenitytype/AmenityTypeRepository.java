@@ -1,4 +1,4 @@
-package org.example.bookingappliation.repository;
+package org.example.bookingappliation.repository.amenitytype;
 
 import org.example.bookingappliation.model.accommodation.AmenityType;
 import org.springframework.data.jpa.repository.JpaRepository;

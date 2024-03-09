@@ -1,4 +1,4 @@
-package org.example.bookingappliation.repository;
+package org.example.bookingappliation.repository.sizetype;
 
 import org.example.bookingappliation.model.accommodation.SizeType;
 import org.springframework.data.jpa.repository.JpaRepository;

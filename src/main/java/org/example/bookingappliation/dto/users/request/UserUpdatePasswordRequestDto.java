@@ -1,10 +1,10 @@
-package org.example.bookingappliation.dto.user;
+package org.example.bookingappliation.dto.users.request;
 
 import lombok.Data;
 import org.example.bookingappliation.validation.PasswordValues;
 
 @Data
-public class UserUpdatePasswordDto {
+public class UserUpdatePasswordRequestDto {
     @PasswordValues
     private String oldPassword;
     @PasswordValues

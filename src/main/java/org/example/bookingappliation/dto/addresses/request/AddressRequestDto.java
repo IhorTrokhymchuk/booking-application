@@ -1,4 +1,4 @@
-package org.example.bookingappliation.dto;
+package org.example.bookingappliation.dto.addresses.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
