@@ -19,7 +19,6 @@ public class SizeTypeSpecificationProvider implements SpecificationProvider<Acco
 
     @Override
     public Specification<Accommodation> getSpecification(Long[] params) {
-
         return (root, query, criteriaBuilder) -> root.get(SIZE_TYPE_FIELD_NAME)
             .in(Arrays.stream(params).map(SizeType::new).toArray());
     }
