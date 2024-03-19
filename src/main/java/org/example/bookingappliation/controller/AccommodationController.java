@@ -5,8 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.bookingappliation.dto.AccommodationDto;
-import org.example.bookingappliation.dto.AccommodationRequestDto;
+import org.example.bookingappliation.dto.accommodations.request.AccommodationRequestDto;
+import org.example.bookingappliation.dto.accommodations.request.AccommodationSearchDto;
+import org.example.bookingappliation.dto.accommodations.response.AccommodationDto;
 import org.example.bookingappliation.service.AccommodationService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -33,6 +34,13 @@ public class AccommodationController {
             description = "Get a page of all available accommodations")
     public List<AccommodationDto> getAll(Pageable pageable) {
         return accommodationService.getAll(pageable);
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Get all accommodations with parameters",
+            description = "Get a page of all available accommodations with parameters")
+    public List<AccommodationDto> search(Pageable pageable, AccommodationSearchDto requestDto) {
+        return accommodationService.search(pageable, requestDto);
     }
 
     @GetMapping("/{id}")

@@ -4,10 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.bookingappliation.dto.user.UserResponseDto;
-import org.example.bookingappliation.dto.user.UserUpdateInfoRequestDto;
-import org.example.bookingappliation.dto.user.UserUpdatePasswordDto;
-import org.example.bookingappliation.dto.user.UserUpdateRolesRequestDto;
+import org.example.bookingappliation.dto.users.request.UserUpdateInfoRequestDto;
+import org.example.bookingappliation.dto.users.request.UserUpdatePasswordRequestDto;
+import org.example.bookingappliation.dto.users.request.UserUpdateRolesRequestDto;
+import org.example.bookingappliation.dto.users.response.UserResponseDto;
 import org.example.bookingappliation.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -50,7 +50,7 @@ public class UserController {
             description = "Update user password")
     public void updatePassword(
             Authentication authentication,
-            @RequestBody @Valid UserUpdatePasswordDto requestDto) {
+            @RequestBody @Valid UserUpdatePasswordRequestDto requestDto) {
         userService.updatePassword(authentication.getName(), requestDto);
     }
 

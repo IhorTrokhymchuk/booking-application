@@ -1,8 +1,8 @@
 package org.example.bookingappliation.mapper;
 
 import org.example.bookingappliation.config.MapperConfig;
-import org.example.bookingappliation.dto.AddressDto;
-import org.example.bookingappliation.dto.AddressRequestDto;
+import org.example.bookingappliation.dto.addresses.request.AddressRequestDto;
+import org.example.bookingappliation.dto.addresses.response.AddressDto;
 import org.example.bookingappliation.model.accommodation.Address;
 import org.mapstruct.Mapper;
 

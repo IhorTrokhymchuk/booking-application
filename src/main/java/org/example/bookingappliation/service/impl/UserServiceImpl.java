@@ -5,19 +5,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.example.bookingappliation.dto.user.UserRequestDto;
-import org.example.bookingappliation.dto.user.UserResponseDto;
-import org.example.bookingappliation.dto.user.UserUpdateInfoRequestDto;
-import org.example.bookingappliation.dto.user.UserUpdatePasswordDto;
-import org.example.bookingappliation.dto.user.UserUpdateRolesRequestDto;
+import org.example.bookingappliation.dto.users.request.UserRequestDto;
+import org.example.bookingappliation.dto.users.request.UserUpdateInfoRequestDto;
+import org.example.bookingappliation.dto.users.request.UserUpdatePasswordRequestDto;
+import org.example.bookingappliation.dto.users.request.UserUpdateRolesRequestDto;
+import org.example.bookingappliation.dto.users.response.UserResponseDto;
 import org.example.bookingappliation.exception.EntityAlreadyExistsException;
 import org.example.bookingappliation.exception.EntityNotFoundException;
 import org.example.bookingappliation.exception.PasswordNotValidException;
 import org.example.bookingappliation.mapper.UserMapper;
 import org.example.bookingappliation.model.user.RoleType;
 import org.example.bookingappliation.model.user.User;
-import org.example.bookingappliation.repository.RoleTypeRepository;
-import org.example.bookingappliation.repository.UserRepository;
+import org.example.bookingappliation.repository.roletype.RoleTypeRepository;
+import org.example.bookingappliation.repository.user.UserRepository;
 import org.example.bookingappliation.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private static final List<RoleType.RoleName> ROLE_NAME_LIST =
-            RoleType.RoleName.getRolesInOrder();
-    private static final Long CUSTOMER_ROLE_ID =
-            (long) ROLE_NAME_LIST.indexOf(RoleType.RoleName.CUSTOMER) + 1;
+    private static final RoleType.RoleName CUSTOMER_ROLE_TYPE = RoleType.RoleName.CUSTOMER;
     private final RoleTypeRepository roleTypeRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -47,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(String email, UserUpdatePasswordDto requestDto) {
+    public void updatePassword(String email, UserUpdatePasswordRequestDto requestDto) {
         User user = getUser(email);
         passwordEncoder.matches(requestDto.getOldPassword(), user.getPassword());
         isPasswordsValid(requestDto.getNewPassword(), requestDto.getRepeatNewPassword());
@@ -58,7 +55,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto updateRoles(Long id, UserUpdateRolesRequestDto requestDto) {
         User user = getUser(id);
-        setRoleType(user, requestDto.getRoleId());
+        setRoleType(user, requestDto.getRoleName());
         return userMapper.toResponseDto(userRepository.save(user));
     }
 
@@ -68,7 +65,7 @@ public class UserServiceImpl implements UserService {
         User newUser = userMapper.toModelWithoutPasswordAndRoles(requestDto);
         isPasswordsValid(requestDto.getPassword(), requestDto.getRepeatPassword());
         setPassword(newUser, requestDto.getPassword());
-        setRoleType(newUser, CUSTOMER_ROLE_ID);
+        setRoleType(newUser, CUSTOMER_ROLE_TYPE);
         return userMapper.toResponseDto(userRepository.save(newUser));
     }
 
@@ -111,9 +108,8 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private void setRoleType(User user, Long roleId) {
-        List<RoleType.RoleName> roleNamesSubList =
-                ROLE_NAME_LIST.subList(0, Math.toIntExact(roleId));
+    private void setRoleType(User user, RoleType.RoleName highestRole) {
+        List<RoleType.RoleName> roleNamesSubList = RoleType.RoleName.getRolesUpTo(highestRole);;
         List<RoleType> roleTypes = roleTypeRepository.findRoleTypesByNameIn(roleNamesSubList);
         Set<RoleType> newRoleTypes = new HashSet<>(roleTypes);
         user.setRoles(newRoleTypes);

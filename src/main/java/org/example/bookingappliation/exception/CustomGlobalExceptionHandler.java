@@ -17,10 +17,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final int NOT_FOUND_STATUS_CODE = 404;
-    private static final int UNAUTHORIZED_STATUS_CODE = 401;
-    private static final int CONFLICT_STATUS_CODE = 409;
     private static final int BAD_REQUEST_STATUS_CODE = 400;
+    private static final int UNAUTHORIZED_STATUS_CODE = 401;
+    private static final int FORBIDDEN_STATUS_CODE = 403;
+    private static final int NOT_FOUND_STATUS_CODE = 404;
+    private static final int CONFLICT_STATUS_CODE = 409;
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -65,6 +66,24 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<Object> handleCustomException(PasswordNotValidException ex) {
         return getObjectResponseEntity(ex.getMessage(),
                 HttpStatusCode.valueOf(UNAUTHORIZED_STATUS_CODE));
+    }
+
+    @ExceptionHandler(InvalidDateException.class)
+    public ResponseEntity<Object> handleCustomException(InvalidDateException ex) {
+        return getObjectResponseEntity(ex.getMessage(),
+                HttpStatusCode.valueOf(BAD_REQUEST_STATUS_CODE));
+    }
+
+    @ExceptionHandler(UserDontHavePermissions.class)
+    public ResponseEntity<Object> handleCustomException(UserDontHavePermissions ex) {
+        return getObjectResponseEntity(ex.getMessage(),
+                HttpStatusCode.valueOf(FORBIDDEN_STATUS_CODE));
+    }
+
+    @ExceptionHandler(BookingInfoException.class)
+    public ResponseEntity<Object> handleCustomException(BookingInfoException ex) {
+        return getObjectResponseEntity(ex.getMessage(),
+                HttpStatusCode.valueOf(BAD_REQUEST_STATUS_CODE));
     }
 
     private ResponseEntity<Object> getObjectResponseEntity(String message,

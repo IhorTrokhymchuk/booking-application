@@ -4,21 +4,24 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.example.bookingappliation.dto.AccommodationDto;
-import org.example.bookingappliation.dto.AccommodationRequestDto;
-import org.example.bookingappliation.dto.AddressRequestDto;
+import org.example.bookingappliation.dto.accommodations.request.AccommodationRequestDto;
+import org.example.bookingappliation.dto.accommodations.request.AccommodationSearchDto;
+import org.example.bookingappliation.dto.accommodations.response.AccommodationDto;
+import org.example.bookingappliation.dto.addresses.request.AddressRequestDto;
 import org.example.bookingappliation.exception.EntityNotFoundException;
 import org.example.bookingappliation.mapper.AccommodationMapper;
 import org.example.bookingappliation.mapper.AddressMapper;
 import org.example.bookingappliation.model.accommodation.Accommodation;
 import org.example.bookingappliation.model.accommodation.Address;
-import org.example.bookingappliation.repository.AccommodationRepository;
-import org.example.bookingappliation.repository.AddressRepository;
+import org.example.bookingappliation.repository.accommodation.AccommodationRepository;
+import org.example.bookingappliation.repository.accommodation.AccommodationSpecificationBuilder;
+import org.example.bookingappliation.repository.address.AddressRepository;
 import org.example.bookingappliation.service.AccommodationService;
 import org.example.bookingappliation.service.AddressService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,6 +32,7 @@ public class AccommodationServiceImpl implements AccommodationService {
     private final AddressService addressService;
     private final AddressMapper addressMapper;
     private final AddressRepository addressRepository;
+    private final AccommodationSpecificationBuilder accommodationSpecificationBuilder;
 
     @Override
     @Transactional
@@ -44,6 +48,25 @@ public class AccommodationServiceImpl implements AccommodationService {
     }
 
     @Override
+    @Transactional
+    public List<AccommodationDto> search(Pageable pageable, AccommodationSearchDto requestDto) {
+        Specification<Accommodation> accommodationSpecification
+                = accommodationSpecificationBuilder.build(requestDto);
+
+        Page<Accommodation> accommodations =
+                accommodationRepository.findAll(accommodationSpecification, pageable);
+
+        if (accommodations.isEmpty()) {
+            throw new EntityNotFoundException("Cant find accommodations with parameters: "
+                    + accommodations);
+        }
+        return accommodations.stream()
+                .map(accommodationMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    @Transactional
     public List<AccommodationDto> getAll(Pageable pageable) {
         Page<Accommodation> accommodationList = accommodationRepository.findAll(pageable);
         if (accommodationList.isEmpty()) {

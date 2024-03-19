@@ -1,8 +1,9 @@
 package org.example.bookingappliation.service;
 
 import java.util.List;
-import org.example.bookingappliation.dto.AccommodationDto;
-import org.example.bookingappliation.dto.AccommodationRequestDto;
+import org.example.bookingappliation.dto.accommodations.request.AccommodationRequestDto;
+import org.example.bookingappliation.dto.accommodations.request.AccommodationSearchDto;
+import org.example.bookingappliation.dto.accommodations.response.AccommodationDto;
 import org.springframework.data.domain.Pageable;
 
 public interface AccommodationService {
@@ -11,6 +12,8 @@ public interface AccommodationService {
     AccommodationDto getById(Long id);
 
     List<AccommodationDto> getAll(Pageable pageable);
+
+    List<AccommodationDto> search(Pageable pageable, AccommodationSearchDto requestDto);
 
     AccommodationDto update(Long id, AccommodationRequestDto requestDto);
 

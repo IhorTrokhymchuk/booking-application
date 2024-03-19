@@ -4,7 +4,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.example.bookingappliation.exception.EntityNotFoundException;
 import org.example.bookingappliation.model.accommodation.SizeType;
-import org.example.bookingappliation.repository.SizeTypeRepository;
+import org.example.bookingappliation.repository.sizetype.SizeTypeRepository;
 import org.example.bookingappliation.service.SizeTypeService;
 import org.springframework.stereotype.Service;
 

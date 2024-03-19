@@ -18,7 +18,7 @@ databaseChangeLog:
       file: db/changelog/changes/03-01-insert-accommodation-type-to-table.yaml
 
   - include:
-      file: db/changelog/changes/04-create-addresses-table.yaml
+      file: db/changelog/changes/04-create-addresses-tables.yaml
 
   - include:
       file: db/changelog/changes/05-create-accommodations-table.yaml
