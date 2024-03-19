@@ -1,7 +1,6 @@
 package org.example.bookingappliation.mapper;
 
 import org.example.bookingappliation.config.MapperConfig;
-import org.example.bookingappliation.dto.bookings.request.BookingPatchRequestDto;
 import org.example.bookingappliation.dto.bookings.request.BookingRequestDto;
 import org.example.bookingappliation.dto.bookings.responce.BookingDto;
 import org.example.bookingappliation.model.booking.Booking;

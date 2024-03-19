@@ -1,12 +1,9 @@
 package org.example.bookingappliation.service;
 
 import java.util.List;
-
-import org.example.bookingappliation.dto.bookings.request.BookingPatchRequestDto;
 import org.example.bookingappliation.dto.bookings.request.BookingRequestDto;
 import org.example.bookingappliation.dto.bookings.responce.BookingDto;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 public interface BookingService {
     BookingDto save(BookingRequestDto requestDto, String email);
