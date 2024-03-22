@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.bookingappliation.service.PaymentService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Payment management", description = "Endpoints manage payment")
 @RestController
@@ -18,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
     private final PaymentService paymentService;
 
-    @GetMapping("/{id}")
+    @PostMapping("/{id}")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Get payment URL",
             description = "Get payment URL")
