@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    private static final int INTERNAL_SERVER_STATUS_CODE = 500;
     private static final int BAD_REQUEST_STATUS_CODE = 400;
     private static final int UNAUTHORIZED_STATUS_CODE = 401;
     private static final int FORBIDDEN_STATUS_CODE = 403;
@@ -84,6 +85,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
     public ResponseEntity<Object> handleCustomException(BookingInfoException ex) {
         return getObjectResponseEntity(ex.getMessage(),
                 HttpStatusCode.valueOf(BAD_REQUEST_STATUS_CODE));
+    }
+
+    @ExceptionHandler(StripeInitSessionException.class)
+    public ResponseEntity<Object> handleCustomException(StripeInitSessionException ex) {
+        return getObjectResponseEntity(ex.getMessage(),
+                HttpStatusCode.valueOf(INTERNAL_SERVER_STATUS_CODE));
     }
 
     private ResponseEntity<Object> getObjectResponseEntity(String message,
