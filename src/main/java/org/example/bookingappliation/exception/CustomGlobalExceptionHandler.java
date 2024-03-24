@@ -87,10 +87,22 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 HttpStatusCode.valueOf(BAD_REQUEST_STATUS_CODE));
     }
 
-    @ExceptionHandler(StripeInitSessionException.class)
-    public ResponseEntity<Object> handleCustomException(StripeInitSessionException ex) {
+    @ExceptionHandler(StripeSessionException.class)
+    public ResponseEntity<Object> handleCustomException(StripeSessionException ex) {
         return getObjectResponseEntity(ex.getMessage(),
                 HttpStatusCode.valueOf(INTERNAL_SERVER_STATUS_CODE));
+    }
+
+    @ExceptionHandler(PaymentDontConfirmException.class)
+    public ResponseEntity<Object> handleCustomException(PaymentDontConfirmException ex) {
+        return getObjectResponseEntity(ex.getMessage(),
+                HttpStatusCode.valueOf(CONFLICT_STATUS_CODE));
+    }
+
+    @ExceptionHandler(CantPaidBookingException.class)
+    public ResponseEntity<Object> handleCustomException(CantPaidBookingException ex) {
+        return getObjectResponseEntity(ex.getMessage(),
+                HttpStatusCode.valueOf(CONFLICT_STATUS_CODE));
     }
 
     private ResponseEntity<Object> getObjectResponseEntity(String message,
