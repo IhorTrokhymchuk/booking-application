@@ -32,3 +32,18 @@ databaseChangeLog:
               - column:
                   name: name
                   value: 'PAID'
+
+        - preConditions:
+            onFail: CONTINUE
+            sqlCheck:
+              expectedResult: 0
+              sql: SELECT COUNT(*) FROM payment_status WHERE name = 'CANCEL'
+          insert:
+            tableName: payment_status
+            columns:
+              - column:
+                  name: id
+                  valueNumeric: 3
+              - column:
+                  name: name
+                  value: 'CANCEL'

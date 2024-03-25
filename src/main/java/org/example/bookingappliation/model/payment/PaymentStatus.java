@@ -26,6 +26,7 @@ public class PaymentStatus {
 
     public enum PaymentStatusName {
         PENDING,
-        PAID
+        PAID,
+        CANCEL
     }
 }

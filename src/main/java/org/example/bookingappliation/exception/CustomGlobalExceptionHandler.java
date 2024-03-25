@@ -105,6 +105,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
                 HttpStatusCode.valueOf(CONFLICT_STATUS_CODE));
     }
 
+    @ExceptionHandler(PaymentCancelException.class)
+    public ResponseEntity<Object> handleCustomException(PaymentCancelException ex) {
+        return getObjectResponseEntity(ex.getMessage(),
+                HttpStatusCode.valueOf(CONFLICT_STATUS_CODE));
+    }
+
     private ResponseEntity<Object> getObjectResponseEntity(String message,
                                                            HttpStatusCode httpStatusCode) {
         Map<String, String> errorsBody = new LinkedHashMap<>();

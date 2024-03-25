@@ -65,7 +65,7 @@ public class BookingController {
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Cancel bookings",
             description = "Cancel booking if is have status pending")
-    public BookingDto updateDate(@PathVariable Long id,
+    public BookingDto cancelBooking(@PathVariable Long id,
                                  Authentication authentication) {
         return bookingService.cancel(id, authentication.getName());
     }

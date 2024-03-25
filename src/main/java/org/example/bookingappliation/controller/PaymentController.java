@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.bookingappliation.dto.payment.responce.PaymentDto;
+import org.example.bookingappliation.service.BookingService;
 import org.example.bookingappliation.service.PaymentService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -32,7 +33,16 @@ public class PaymentController {
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "success payment ",
             description = "success payment by session id")
-    public PaymentDto successPayments(@PathVariable Long bookingId) {
-        return paymentService.successPayment(bookingId);
+    public PaymentDto successPayments(@PathVariable Long bookingId, Authentication authentication) {
+        return paymentService.successPayment(bookingId, authentication.getName());
     }
+
+    @GetMapping("/cancel/{bookingId}")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    @Operation(summary = "success payment ",
+            description = "success payment by session id")
+    public PaymentDto cancelPayments(@PathVariable Long bookingId, Authentication authentication) {
+        return paymentService.cancelPaymentAndBooking(bookingId, authentication.getName());
+    }
+
 }

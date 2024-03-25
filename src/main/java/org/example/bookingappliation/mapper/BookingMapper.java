@@ -4,6 +4,7 @@ import org.example.bookingappliation.config.MapperConfig;
 import org.example.bookingappliation.dto.bookings.request.BookingRequestDto;
 import org.example.bookingappliation.dto.bookings.responce.BookingDto;
 import org.example.bookingappliation.model.booking.Booking;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

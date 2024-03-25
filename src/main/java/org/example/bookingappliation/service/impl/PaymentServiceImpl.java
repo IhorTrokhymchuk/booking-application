@@ -7,10 +7,12 @@ import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.example.bookingappliation.dto.payment.responce.PaymentDto;
 import org.example.bookingappliation.exception.CantPaidBookingException;
 import org.example.bookingappliation.exception.EntityNotFoundException;
+import org.example.bookingappliation.exception.PaymentCancelException;
 import org.example.bookingappliation.exception.PaymentDontConfirmException;
 import org.example.bookingappliation.exception.StripeSessionException;
 import org.example.bookingappliation.exception.UserDontHavePermissions;
@@ -24,39 +26,42 @@ import org.example.bookingappliation.repository.booking.BookingRepository;
 import org.example.bookingappliation.repository.bookingstatus.BookingStatusRepository;
 import org.example.bookingappliation.repository.payment.PaymentRepository;
 import org.example.bookingappliation.repository.paymentstatus.PaymentStatusRepository;
+import org.example.bookingappliation.service.BookingService;
+import org.example.bookingappliation.service.MassageConfigurator;
 import org.example.bookingappliation.service.PaymentService;
 import org.springframework.stereotype.Service;
-//TODO SESSION DESCRIPTION FOR STRIPE
 //TODO DTO FOR SUCCESSES PAYMENT
-//TODO CANCEL METHOD
-//TODO CHECK IF PAID DONT ALLOW
-//TODO VALIDATOR FOR CHECK IF THIS BOOKING HAS STATUS PENDING
 
 @Service
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
     private static final SessionCreateParams.PaymentMethodType PAYMENT_METHOD
             = SessionCreateParams.PaymentMethodType.CARD;
+    private static final SessionCreateParams.Mode SESSION_MODE
+            = SessionCreateParams.Mode.PAYMENT;
     private static final PaymentStatus.PaymentStatusName PENDING_PAYMENT_STATUS
             = PaymentStatus.PaymentStatusName.PENDING;
     private static final PaymentStatus.PaymentStatusName PAID_PAYMENT_STATUS
             = PaymentStatus.PaymentStatusName.PAID;
-    private static final SessionCreateParams.Mode SESSION_MODE
-            = SessionCreateParams.Mode.PAYMENT;
-    private static final BookingStatus.BookingStatusName CONFIRMED_BOOKING_STATUS
-            = BookingStatus.BookingStatusName.CONFIRMED;
+    private static final PaymentStatus.PaymentStatusName CANCEL_PAYMENT_STATUS =
+            PaymentStatus.PaymentStatusName.CANCEL;
     private static final BookingStatus.BookingStatusName PENDING_BOOKING_STATUS
             = BookingStatus.BookingStatusName.PENDING;
+    private static final BookingStatus.BookingStatusName CONFIRMED_BOOKING_STATUS
+            = BookingStatus.BookingStatusName.CONFIRMED;
     private static final String STRIPE_PAID_STATUS = "paid";
     private static final String CURRENCY = "USD";
     private static final String PRODUCT_NAME = "Housing reservation";
     private static final String SUCCESS_URL = "http://localhost:8080/payments/success/";
     private static final String CANCEL_URL = "http://localhost:8080/payments/cancel/";
+
     private final PaymentRepository paymentRepository;
     private final PaymentStatusRepository paymentStatusRepository;
     private final BookingRepository bookingRepository;
     private final BookingStatusRepository bookingStatusRepository;
     private final PaymentMapper paymentMapper;
+    private final MassageConfigurator massageConfigurator;
+    private final BookingService bookingService;
 
     @Override
     @Transactional
@@ -64,6 +69,10 @@ public class PaymentServiceImpl implements PaymentService {
         Booking booking = getBookingById(id);
         checkBookingStatus(booking);
         checkBookingUser(email, booking);
+        Optional<String> paymentUrlOptional = getUrlIfPaymentCreate(id);
+        if (paymentUrlOptional.isPresent()) {
+            return paymentUrlOptional.get();
+        }
         SessionCreateParams sessionParams = getSessionParams(booking);
         Session session = getStripeSession(sessionParams);
         Payment payment = createPayment(session, booking);
@@ -73,7 +82,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private Booking getBookingById(Long id) {
         return bookingRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Cant find entity with id: " + id));
+                () -> new EntityNotFoundException("Cant find booking with id: " + id));
     }
 
     private void checkBookingStatus(Booking booking) {
@@ -90,13 +99,27 @@ public class PaymentServiceImpl implements PaymentService {
         }
     }
 
+    private Optional<String> getUrlIfPaymentCreate(Long bookingId) {
+        String url = null;
+        Optional<Payment> optional = paymentRepository.findPaymentByBookingId(bookingId);
+        if (optional.isPresent()) {
+            Payment payment = optional.get();
+            if (payment.getStatus().getName().equals(PENDING_PAYMENT_STATUS)) {
+                url = payment.getSessionUrl();
+            } else {
+                throw new CantPaidBookingException("Can't pay booking with id: " + bookingId);
+            }
+        }
+        return Optional.ofNullable(url);
+    }
+
     private SessionCreateParams getSessionParams(Booking booking) {
         return new SessionCreateParams.Builder()
                 .addPaymentMethodType(PAYMENT_METHOD)
                 .addLineItem(getLineItem(booking))
                 .setMode(SESSION_MODE)
                 .setSuccessUrl(SUCCESS_URL + booking.getId())
-                .setCancelUrl(CANCEL_URL)
+                .setCancelUrl(CANCEL_URL + booking.getId())
                 .build();
     }
 
@@ -108,8 +131,7 @@ public class PaymentServiceImpl implements PaymentService {
                         .setProductData(new SessionCreateParams
                                 .LineItem.PriceData.ProductData.Builder()
                                 .setName(PRODUCT_NAME)
-                                //todo description
-                                .setDescription(booking.toString())
+                                .setDescription(massageConfigurator.toMassage(booking))
                                 .build())
                         .build())
                 .setQuantity(getQuantity(booking.getCheckDates()))
@@ -153,8 +175,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public PaymentDto successPayment(Long bookingId) {
+    public PaymentDto successPayment(Long bookingId, String email) {
         Payment payment = getPaymentByBookingId(bookingId);
+        checkBookingUser(email, payment.getBooking());
         if (payment.getStatus().getName().equals(PAID_PAYMENT_STATUS)) {
             return paymentMapper.toDto(payment);
         }
@@ -167,7 +190,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private Payment getPaymentByBookingId(Long id) {
         return paymentRepository.findPaymentByBookingId(id).orElseThrow(
-                () -> new EntityNotFoundException("Cant find payment where booking: " + id));
+                () -> new EntityNotFoundException("Cant find payment where booking id: " + id));
     }
 
     private Session getSessionById(String id) {
@@ -185,14 +208,32 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private void updateBookingStatus(Booking booking, BookingStatus.BookingStatusName statusName) {
-        BookingStatus confirmedBookingStatus
+        BookingStatus bookingStatus
                 = bookingStatusRepository.findBookingStatusByName(statusName);
-        booking.setStatus(confirmedBookingStatus);
+        booking.setStatus(bookingStatus);
         bookingRepository.save(booking);
     }
 
     private void updatePaymentStatus(Payment payment, PaymentStatus.PaymentStatusName statusName) {
         setStatusToPayment(payment, statusName);
         paymentRepository.save(payment);
+    }
+
+    @Override
+    @Transactional
+    public PaymentDto cancelPaymentAndBooking(Long bookingId, String email) {
+        checkBookingUser(email, getBookingById(bookingId));
+        Payment payment = getPaymentByBookingId(bookingId);
+        checkPaymentStatus(payment, PENDING_PAYMENT_STATUS);
+        updatePaymentStatus(payment, CANCEL_PAYMENT_STATUS);
+        bookingService.cancel(bookingId, email);
+        return paymentMapper.toDto(payment);
+    }
+
+    private void checkPaymentStatus(Payment payment, PaymentStatus.PaymentStatusName statusName) {
+        if (!payment.getStatus().getName().equals(statusName)) {
+            throw new PaymentCancelException("Cant cancel payment with id: " + payment.getId()
+                    + " because status: " + payment.getStatus().getName());
+        }
     }
 }
