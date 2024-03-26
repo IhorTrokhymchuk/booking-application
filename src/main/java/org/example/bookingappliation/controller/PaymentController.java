@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.bookingappliation.dto.payment.responce.PaymentDto;
-import org.example.bookingappliation.service.BookingService;
 import org.example.bookingappliation.service.PaymentService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -21,28 +20,27 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
     private final PaymentService paymentService;
 
-    @PostMapping("/{bookingId}")
+    @PostMapping("/{id}")
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @Operation(summary = "Get payment URL",
-            description = "Get payment URL")
-    public String createPaymentIntent(@PathVariable Long bookingId, Authentication authentication) {
-        return paymentService.createPaymentCheckoutSession(bookingId, authentication.getName());
+            description = "Get payment URL by booking id")
+    public String createPaymentIntent(@PathVariable Long id, Authentication authentication) {
+        return paymentService.createPaymentCheckoutSession(id, authentication.getName());
     }
 
-    @GetMapping("/success/{bookingId}")
+    @GetMapping("/success/{id}")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Operation(summary = "success payment ",
-            description = "success payment by session id")
-    public PaymentDto successPayments(@PathVariable Long bookingId, Authentication authentication) {
-        return paymentService.successPayment(bookingId, authentication.getName());
+    @Operation(summary = "Success payment ",
+            description = "Success payment by session id")
+    public PaymentDto successPayments(@PathVariable Long id, Authentication authentication) {
+        return paymentService.successPayment(id, authentication.getName());
     }
 
-    @GetMapping("/cancel/{bookingId}")
+    @GetMapping("/cancel/{id}")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    @Operation(summary = "success payment ",
-            description = "success payment by session id")
-    public PaymentDto cancelPayments(@PathVariable Long bookingId, Authentication authentication) {
-        return paymentService.cancelPaymentAndBooking(bookingId, authentication.getName());
+    @Operation(summary = "Cancel payment ",
+            description = "Cancel payment by booking id")
+    public PaymentDto cancelPayments(@PathVariable Long id, Authentication authentication) {
+        return paymentService.cancelPaymentAndBooking(id, authentication.getName());
     }
-
 }

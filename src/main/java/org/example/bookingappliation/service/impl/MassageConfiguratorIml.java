@@ -8,7 +8,7 @@ import org.example.bookingappliation.model.user.User;
 import org.example.bookingappliation.service.MassageConfigurator;
 import org.springframework.stereotype.Service;
 
-//this is temporary solution
+//THIS IS TEMPORARY SOLUTION
 @Service
 public class MassageConfiguratorIml implements MassageConfigurator {
     private static final String HEADER = "Your booking: ";

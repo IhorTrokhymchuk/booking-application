@@ -30,7 +30,7 @@ import org.example.bookingappliation.service.BookingService;
 import org.example.bookingappliation.service.MassageConfigurator;
 import org.example.bookingappliation.service.PaymentService;
 import org.springframework.stereotype.Service;
-//TODO DTO FOR SUCCESSES PAYMENT
+//TODO DTO FOR RETURN PAYMENT
 
 @Service
 @RequiredArgsConstructor
@@ -60,8 +60,9 @@ public class PaymentServiceImpl implements PaymentService {
     private final BookingRepository bookingRepository;
     private final BookingStatusRepository bookingStatusRepository;
     private final PaymentMapper paymentMapper;
-    private final MassageConfigurator massageConfigurator;
     private final BookingService bookingService;
+    //THIS IS TEMPORARY SOLUTION
+    private final MassageConfigurator massageConfigurator;
 
     @Override
     @Transactional
@@ -131,6 +132,7 @@ public class PaymentServiceImpl implements PaymentService {
                         .setProductData(new SessionCreateParams
                                 .LineItem.PriceData.ProductData.Builder()
                                 .setName(PRODUCT_NAME)
+                                //THIS IS TEMPORARY SOLUTION
                                 .setDescription(massageConfigurator.toMassage(booking))
                                 .build())
                         .build())
@@ -227,6 +229,12 @@ public class PaymentServiceImpl implements PaymentService {
         checkPaymentStatus(payment, PENDING_PAYMENT_STATUS);
         updatePaymentStatus(payment, CANCEL_PAYMENT_STATUS);
         bookingService.cancel(bookingId, email);
+        Session sessionById = getSessionById(payment.getSessionId());
+        try {
+            sessionById.expire();
+        } catch (StripeException e) {
+            throw new StripeSessionException("Cant cancel stripe session: " + e.getMessage());
+        }
         return paymentMapper.toDto(payment);
     }
 

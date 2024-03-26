@@ -2,7 +2,7 @@ package org.example.bookingappliation.service;
 
 import org.example.bookingappliation.model.booking.Booking;
 
-//this is temporary solution
+//THIS IS TEMPORARY SOLUTION
 public interface MassageConfigurator {
     String toMassage(Booking booking);
 }
