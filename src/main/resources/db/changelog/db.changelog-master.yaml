@@ -43,3 +43,12 @@ databaseChangeLog:
 
   - include:
       file: db/changelog/changes/10-insert-two-user-to-table.yaml
+
+  - include:
+      file: db/changelog/changes/11-create-payment_status-table.yml
+
+  - include:
+      file: db/changelog/changes/11-01-insert-payment-status-to-table.yml
+
+  - include:
+      file: db/changelog/changes/12-create-payments-table.yaml

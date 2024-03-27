@@ -26,14 +26,10 @@ public class AmenityTypeSpecificationProvider
         return (root, query, criteriaBuilder) -> {
             Join<Accommodation, AmenityType> amenityJoin = root.join(AMENITY_TYPE_FIELD_NAME);
             List<Predicate> predicates = new ArrayList<>();
-
             for (Long amenityTypeId : params) {
                 predicates.add(criteriaBuilder.equal(amenityJoin.get("id"), amenityTypeId));
             }
-
-            Predicate predicate = criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-
-            return criteriaBuilder.and(predicate);
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
 }
