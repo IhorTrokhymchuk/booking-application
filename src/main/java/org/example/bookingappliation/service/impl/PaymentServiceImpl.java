@@ -31,6 +31,8 @@ import org.example.bookingappliation.service.MassageConfigurator;
 import org.example.bookingappliation.service.PaymentService;
 import org.springframework.stereotype.Service;
 //TODO DTO FOR RETURN PAYMENT
+//TODO STRIPE DESCRIPTION
+//TODO GET PAYMENTS BY USER
 
 @Service
 @RequiredArgsConstructor
